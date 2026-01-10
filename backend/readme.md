@@ -6,7 +6,7 @@
 ├── CORS: @elysiajs/cors
 └── WebSocket: Elysia WS (optional, nếu cần custom realtime)
 
-├── Database: PostgreSQL (Supabase)
+├── Database: PostgreSQL (Docker)
 ├── ORM: Drizzle ORM (type-safe, Bun-optimized)
 ├── Realtime: Supabase Realtime (PostgreSQL CDC)
 ├── Storage: Supabase Storage (avatars, attachments)
