@@ -1,23 +1,43 @@
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./lib/supabase";
-import { Icon } from "@iconify/react";
-import "./App.css";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useIsAuthenticated } from "./store/authStore";
+import { MainLayout } from "./layouts/MainLayout";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { BoardsPage } from "./pages/BoardsPage";
+import { BoardDetailPage } from "./pages/BoardDetailPage";
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-gray-100 p-8">
-        <header className="flex items-center gap-2 mb-6">
-          <Icon icon="logos:bun" width="32" />
-          <h1 className="text-2xl font-bold">Bun + Elysia + React</h1>
-        </header>
+  const isAuthenticated = useIsAuthenticated();
 
-        {/* Render Kanban Board hoặc Router ở đây */}
-        <main>
-          <p className="text-gray-600">Sẵn sàng để build tính năng DnD!</p>
-        </main>
-      </div>
-    </QueryClientProvider>
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route
+        path="/login"
+        element={isAuthenticated ? <Navigate to="/boards" /> : <LoginPage />}
+      />
+      <Route
+        path="/register"
+        element={isAuthenticated ? <Navigate to="/boards" /> : <RegisterPage />}
+      />
+
+      {/* Protected routes */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/boards" element={<BoardsPage />} />
+        <Route path="/boards/:id" element={<BoardDetailPage />} />
+      </Route>
+
+      {/* Default redirect */}
+      <Route path="/" element={<Navigate to="/boards" />} />
+      <Route path="*" element={<Navigate to="/boards" />} />
+    </Routes>
   );
 }
 
