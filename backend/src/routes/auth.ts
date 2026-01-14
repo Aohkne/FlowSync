@@ -1,57 +1,24 @@
 import { Elysia, t } from "elysia";
-import { db } from "../db";
-import { users } from "../db/schema";
-import { hashPassword, comparePassword, generateToken } from "../lib/auth";
-import { eq } from "drizzle-orm";
 import { authMiddleware } from "../middleware/auth";
+import { AuthController } from "../controllers";
+
+const authController = new AuthController();
 
 export const authRoutes = new Elysia({ prefix: "/auth" })
   // REGISTER
   .post(
     "/register",
     async ({ body, set }) => {
-      const { email, password, fullName } = body;
-
-      // CHECK USER
-      const existingUser = await db.query.users.findFirst({
-        where: eq(users.email, email),
-      });
-
-      if (existingUser) {
+      try {
+        const result = await authController.register(body);
+        set.status = 201;
+        return result;
+      } catch (error) {
         set.status = 400;
-        return { error: "Email already registered" };
+        return {
+          error: error instanceof Error ? error.message : "Registration failed",
+        };
       }
-
-      // HASH PASSWORD
-      const hashedPassword = await hashPassword(password);
-
-      // CREATE USER
-      const [newUser] = await db
-        .insert(users)
-        .values({
-          email,
-          password: hashedPassword,
-          fullName: fullName || null,
-        })
-        .returning({
-          id: users.id,
-          email: users.email,
-          fullName: users.fullName,
-          createdAt: users.createdAt,
-        });
-
-      // GENERATE TOKEN
-      const token = generateToken({
-        userId: newUser.id,
-        email: newUser.email,
-      });
-
-      set.status = 201;
-      return {
-        message: "Registration successful",
-        user: newUser,
-        token,
-      };
     },
     {
       body: t.Object({
@@ -84,42 +51,14 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
   .post(
     "/login",
     async ({ body, set }) => {
-      const { email, password } = body;
-
-      // FIND
-      const user = await db.query.users.findFirst({
-        where: eq(users.email, email),
-      });
-
-      if (!user) {
+      try {
+        return await authController.login(body);
+      } catch (error) {
         set.status = 401;
-        return { error: "Invalid email or password" };
+        return {
+          error: error instanceof Error ? error.message : "Login failed",
+        };
       }
-
-      // VERIFY
-      const isValidPassword = await comparePassword(password, user.password);
-
-      if (!isValidPassword) {
-        set.status = 401;
-        return { error: "Invalid email or password" };
-      }
-
-      // GENERATE TOKEN
-      const token = generateToken({
-        userId: user.id,
-        email: user.email,
-      });
-
-      return {
-        message: "Login successful",
-        user: {
-          id: user.id,
-          email: user.email,
-          fullName: user.fullName,
-          avatarUrl: user.avatarUrl,
-        },
-        token,
-      };
     },
     {
       body: t.Object({
@@ -140,12 +79,14 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
     }
   )
 
-  // GET CURRENT USER (protected)
+  // Protected routes
   .use(authMiddleware)
+
+  // GET CURRENT USER
   .get(
     "/me",
     async ({ user }) => {
-      return { user };
+      return await authController.getMe(user.id);
     },
     {
       detail: {
@@ -157,29 +98,11 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
     }
   )
 
-  // UPDATE PROFILE (protected)
+  // UPDATE PROFILE
   .patch(
     "/profile",
-    async ({ user, body, set }) => {
-      const [updatedUser] = await db
-        .update(users)
-        .set({
-          ...body,
-          updatedAt: new Date(),
-        })
-        .where(eq(users.id, user.id))
-        .returning({
-          id: users.id,
-          email: users.email,
-          fullName: users.fullName,
-          avatarUrl: users.avatarUrl,
-          updatedAt: users.updatedAt,
-        });
-
-      return {
-        message: "Profile updated successfully",
-        user: updatedUser,
-      };
+    async ({ user, body }) => {
+      return await authController.updateProfile(user.id, body);
     },
     {
       body: t.Object({

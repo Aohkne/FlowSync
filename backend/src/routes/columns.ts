@@ -63,6 +63,11 @@ export const columnRoutes = new Elysia({ prefix: "/columns" })
         })
         .returning();
 
+      if (!newColumn) {
+        set.status = 500;
+        return { error: "Failed to create column" };
+      }
+
       // Log activity
       await db.insert(activities).values({
         boardId,
@@ -190,6 +195,11 @@ export const columnRoutes = new Elysia({ prefix: "/columns" })
         .where(eq(columns.id, params.id))
         .returning();
 
+      if (!updatedColumn) {
+        set.status = 500;
+        return { error: "Failed to update column" };
+      }
+
       // Log activity
       await db.insert(activities).values({
         boardId: column.boardId,
@@ -284,6 +294,11 @@ export const columnRoutes = new Elysia({ prefix: "/columns" })
         .set({ position: newPosition, updatedAt: new Date() })
         .where(eq(columns.id, params.id))
         .returning();
+
+      if (!updatedColumn) {
+        set.status = 500;
+        return { error: "Failed to update column" };
+      }
 
       // Log activity
       await db.insert(activities).values({

@@ -53,6 +53,11 @@ export const commentRoutes = new Elysia({ prefix: "/comments" })
         })
         .returning();
 
+      if (!newComment) {
+        set.status = 500;
+        return { error: "Failed to create comment" };
+      }
+
       // GET COMMENT WITH USER INFO
       const commentWithUser = await db.query.comments.findFirst({
         where: eq(comments.id, newComment.id),
@@ -196,6 +201,11 @@ export const commentRoutes = new Elysia({ prefix: "/comments" })
         })
         .where(eq(comments.id, params.id))
         .returning();
+
+      if (!updatedComment) {
+        set.status = 500;
+        return { error: "Failed to update comment" };
+      }
 
       // Get comment with user info
       const commentWithUser = await db.query.comments.findFirst({

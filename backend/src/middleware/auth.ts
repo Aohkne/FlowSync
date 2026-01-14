@@ -1,8 +1,11 @@
 import { Elysia } from "elysia";
+import { eq } from "drizzle-orm";
+
+import type { SafeUser } from "../types";
 import { verifyToken } from "../lib/auth";
+
 import { db } from "../db";
 import { users } from "../db/schema";
-import { eq } from "drizzle-orm";
 
 export const authMiddleware = new Elysia()
   .derive(async ({ headers, set }) => {
@@ -38,6 +41,6 @@ export const authMiddleware = new Elysia()
       throw new Error("User not found");
     }
 
-    return { user };
+    return { user: user as SafeUser };
   })
-  .as("plugin");
+  .as("global");

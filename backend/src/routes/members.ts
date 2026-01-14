@@ -117,6 +117,11 @@ export const memberRoutes = new Elysia({ prefix: "/members" })
         })
         .returning();
 
+      if (!newMember) {
+        set.status = 500;
+        return { error: "Failed to create member" };
+      }
+
       // Get member with user info
       const memberWithUser = await db.query.boardMembers.findFirst({
         where: eq(boardMembers.id, newMember.id),
@@ -213,6 +218,11 @@ export const memberRoutes = new Elysia({ prefix: "/members" })
         .set({ role: body.role })
         .where(eq(boardMembers.id, params.id))
         .returning();
+
+      if (!updatedMember) {
+        set.status = 500;
+        return { error: "Failed to update member" };
+      }
 
       // Get member with user info
       const memberWithUser = await db.query.boardMembers.findFirst({

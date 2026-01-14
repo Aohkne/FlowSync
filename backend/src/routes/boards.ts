@@ -105,6 +105,11 @@ export const boardRoutes = new Elysia({ prefix: "/boards" })
         })
         .returning();
 
+      if (!newBoard) {
+        set.status = 500;
+        return { error: "Failed to create board" };
+      }
+
       // Create default columns
       const defaultColumns = [
         { title: "To Do", position: 0 },
@@ -284,6 +289,11 @@ export const boardRoutes = new Elysia({ prefix: "/boards" })
         })
         .where(eq(boards.id, params.id))
         .returning();
+
+      if (!updatedBoard) {
+        set.status = 500;
+        return { error: "Failed to update board" };
+      }
 
       // Log activity
       await db.insert(activities).values({

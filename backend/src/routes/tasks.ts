@@ -83,6 +83,11 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
         })
         .returning();
 
+      if (!newTask) {
+        set.status = 500;
+        return { error: "Failed to create task" };
+      }
+
       // Get task with relations
       const taskWithRelations = await db.query.tasks.findFirst({
         where: eq(tasks.id, newTask.id),
@@ -291,6 +296,11 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
         .where(eq(tasks.id, params.id))
         .returning();
 
+      if (!updatedTask) {
+        set.status = 500;
+        return { error: "Failed to update task" };
+      }
+
       // Get task with relations
       const taskWithRelations = await db.query.tasks.findFirst({
         where: eq(tasks.id, updatedTask.id),
@@ -470,6 +480,11 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
         })
         .where(eq(tasks.id, params.id))
         .returning();
+
+      if (!updatedTask) {
+        set.status = 500;
+        return { error: "Failed to update task" };
+      }
 
       // Get task with relations
       const taskWithRelations = await db.query.tasks.findFirst({
