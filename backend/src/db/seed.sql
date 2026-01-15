@@ -303,3 +303,97 @@ LEFT JOIN columns c ON c.board_id = b.id
 LEFT JOIN tasks t ON t.column_id = c.id
 LEFT JOIN comments cm ON cm.task_id = t.id
 GROUP BY b.id, b.title;
+
+
+-- ============================================
+-- 8. Create Sample Notifications
+-- ============================================
+
+INSERT INTO notifications (id, user_id, type, title, message, entity_type, entity_id, is_read, created_at) VALUES
+-- Notifications for John
+(
+  'n0000001-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111',
+  'task_assigned',
+  'Task assigned to you',
+  'You were assigned to "Review Q4 campaign performance"',
+  'task',
+  'e0010008-0000-0000-0000-000000000008',
+  false,
+  NOW() - INTERVAL '30 minutes'
+),
+
+-- Notifications for Jane
+(
+  'n0000002-0000-0000-0000-000000000002',
+  '22222222-2222-2222-2222-222222222222',
+  'task_assigned',
+  'New task assigned',
+  'John Doe assigned you to "Schedule influencer partnerships"',
+  'task',
+  'e0010006-0000-0000-0000-000000000006',
+  false,
+  NOW() - INTERVAL '4 days'
+),
+(
+  'n0000003-0000-0000-0000-000000000003',
+  '22222222-2222-2222-2222-222222222222',
+  'comment_added',
+  'New comment on your task',
+  'John Doe commented on "Update landing page copy"',
+  'task',
+  'e0010007-0000-0000-0000-000000000007',
+  true,
+  NOW() - INTERVAL '6 hours'
+),
+
+-- Notifications for Bob
+(
+  'n0000004-0000-0000-0000-000000000004',
+  '33333333-3333-3333-3333-333333333333',
+  'task_assigned',
+  'Task assigned to you',
+  'You were assigned to "Implement user authentication"',
+  'task',
+  'e0010011-0000-0000-0000-000000000011',
+  false,
+  NOW() - INTERVAL '5 days'
+),
+
+-- Notifications for Alice
+(
+  'n0000005-0000-0000-0000-000000000005',
+  '44444444-4444-4444-4444-444444444444',
+  'task_assigned',
+  'New task assigned',
+  'Jane Smith assigned you to "Create wireframes"',
+  'task',
+  'e0010019-0000-0000-0000-000000000019',
+  false,
+  NOW() - INTERVAL '3 days'
+),
+(
+  'n0000006-0000-0000-0000-000000000006',
+  '44444444-4444-4444-4444-444444444444',
+  'comment_added',
+  'New comment',
+  'Jane Smith commented on "Design homepage mockup"',
+  'task',
+  'e0010021-0000-0000-0000-000000000021',
+  false,
+  NOW() - INTERVAL '2 hours'
+);
+
+-- ============================================
+-- UPDATED VERIFICATION QUERIES
+-- ============================================
+SELECT 'Notifications created:' as info, COUNT(*) as count FROM notifications;
+
+-- Show notifications summary
+SELECT
+  u.full_name as user,
+  COUNT(*) as total_notifications,
+  SUM(CASE WHEN is_read = false THEN 1 ELSE 0 END) as unread
+FROM notifications n
+JOIN users u ON u.id = n.user_id
+GROUP BY u.id, u.full_name;

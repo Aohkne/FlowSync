@@ -7,117 +7,141 @@ import {
   integer,
   jsonb,
   varchar,
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+} from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 // Users table
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  password: varchar("password", { length: 255 }).notNull(),
-  fullName: varchar("full_name", { length: 255 }),
-  avatarUrl: text("avatar_url"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  password: varchar('password', { length: 255 }).notNull(),
+  fullName: varchar('full_name', { length: 255 }),
+  avatarUrl: text('avatar_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Boards
-export const boards = pgTable("boards", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  title: varchar("title", { length: 100 }).notNull(),
-  description: text("description"),
-  ownerId: uuid("owner_id")
+export const boards = pgTable('boards', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: varchar('title', { length: 100 }).notNull(),
+  description: text('description'),
+  ownerId: uuid('owner_id')
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  isPublic: boolean("is_public").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    .references(() => users.id, { onDelete: 'cascade' }),
+  isPublic: boolean('is_public').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Board Members
-export const boardMembers = pgTable("board_members", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  boardId: uuid("board_id")
+export const boardMembers = pgTable('board_members', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  boardId: uuid('board_id')
     .notNull()
-    .references(() => boards.id, { onDelete: "cascade" }),
-  userId: uuid("user_id")
+    .references(() => boards.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  role: varchar("role", { length: 20 }).notNull().default("viewer"), // owner, editor, viewer
-  joinedAt: timestamp("joined_at").defaultNow().notNull(),
+    .references(() => users.id, { onDelete: 'cascade' }),
+  role: varchar('role', { length: 20 }).notNull().default('viewer'), // owner, editor, viewer
+  joinedAt: timestamp('joined_at').defaultNow().notNull(),
 });
 
 // Columns
-export const columns = pgTable("columns", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  boardId: uuid("board_id")
+export const columns = pgTable('columns', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  boardId: uuid('board_id')
     .notNull()
-    .references(() => boards.id, { onDelete: "cascade" }),
-  title: varchar("title", { length: 100 }).notNull(),
-  position: integer("position").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    .references(() => boards.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 100 }).notNull(),
+  position: integer('position').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Tasks
-export const tasks = pgTable("tasks", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  columnId: uuid("column_id")
+export const tasks = pgTable('tasks', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  columnId: uuid('column_id')
     .notNull()
-    .references(() => columns.id, { onDelete: "cascade" }),
-  title: varchar("title", { length: 255 }).notNull(),
-  description: text("description"),
-  position: integer("position").notNull(),
-  priority: varchar("priority", { length: 20 }).default("medium"), // low, medium, high
-  assignedTo: uuid("assigned_to").references(() => users.id, {
-    onDelete: "set null",
+    .references(() => columns.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  position: integer('position').notNull(),
+  priority: varchar('priority', { length: 20 }).default('medium'), // low, medium, high
+  assignedTo: uuid('assigned_to').references(() => users.id, {
+    onDelete: 'set null',
   }),
-  createdBy: uuid("created_by")
+  createdBy: uuid('created_by')
     .notNull()
     .references(() => users.id),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Comments
-export const comments = pgTable("comments", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  taskId: uuid("task_id")
+export const comments = pgTable('comments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  taskId: uuid('task_id')
     .notNull()
-    .references(() => tasks.id, { onDelete: "cascade" }),
-  userId: uuid("user_id")
+    .references(() => tasks.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    .references(() => users.id, { onDelete: 'cascade' }),
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Activities
-export const activities = pgTable("activities", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  boardId: uuid("board_id")
+export const activities = pgTable('activities', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  boardId: uuid('board_id')
     .notNull()
-    .references(() => boards.id, { onDelete: "cascade" }),
-  userId: uuid("user_id")
+    .references(() => boards.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id),
-  action: varchar("action", { length: 50 }).notNull(), // created, updated, deleted, moved, commented
-  entityType: varchar("entity_type", { length: 50 }).notNull(), // board, column, task, comment
-  entityId: uuid("entity_id"),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  action: varchar('action', { length: 50 }).notNull(), // created, updated, deleted, moved, commented
+  entityType: varchar('entity_type', { length: 50 }).notNull(), // board, column, task, comment
+  entityId: uuid('entity_id'),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// Notifications
+export const notifications = pgTable('notifications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  type: varchar('type', { length: 50 }).notNull(), // task_assigned, mentioned, comment_added
+  title: varchar('title', { length: 255 }).notNull(),
+  message: text('message').notNull(),
+  entityType: varchar('entity_type', { length: 50 }), // task, comment, board
+  entityId: uuid('entity_id'),
+  isRead: boolean('is_read').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Notifications Relations
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
+}));
 
 // ===== RELATIONS =====
 
 export const usersRelations = relations(users, ({ many }) => ({
   ownedBoards: many(boards),
   boardMemberships: many(boardMembers),
-  createdTasks: many(tasks, { relationName: "creator" }),
-  assignedTasks: many(tasks, { relationName: "assignee" }),
+  createdTasks: many(tasks, { relationName: 'creator' }),
+  assignedTasks: many(tasks, { relationName: 'assignee' }),
   comments: many(comments),
   activities: many(activities),
+  notifications: many(notifications),
 }));
 
 export const boardsRelations = relations(boards, ({ one, many }) => ({
@@ -157,12 +181,12 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
   assignedUser: one(users, {
     fields: [tasks.assignedTo],
     references: [users.id],
-    relationName: "assignee",
+    relationName: 'assignee',
   }),
   creator: one(users, {
     fields: [tasks.createdBy],
     references: [users.id],
-    relationName: "creator",
+    relationName: 'creator',
   }),
   comments: many(comments),
 }));
