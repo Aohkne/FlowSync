@@ -27,6 +27,13 @@
 | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)     | Token-based authentication |
 | ![bcrypt](https://img.shields.io/badge/bcrypt-338033?style=for-the-badge&logo=letsencrypt&logoColor=white) | Password hashing           |
 
+### Real-time & File Handling
+
+| Technology                                                                                                       | Description             |
+| ---------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| ![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white) | Real-time communication |
+| ![Static Files](https://img.shields.io/badge/Static_Files-FF6B6B?style=for-the-badge&logo=files&logoColor=white) | File upload & serving   |
+
 ## 📂 Project Structure
 
 ```
@@ -34,7 +41,17 @@
 │
 ├── 📁 drizzle/                  # Auto-generated migration files
 │
+├── 📁 uploads/                  # Uploaded files (avatars)
+│   └── 📁 avatars/              # User avatar images
+│
 ├── 📁 src/                      # Source code chính
+│   ├── 📁 config/               # Configuration files
+│   │   └── 📄 database.ts       # Database connection setup
+│   │
+│   ├── 📁 controllers/          # Business logic controllers
+│   │   ├── 📄 authController.ts # Auth controller
+│   │   └── 📄 index.ts          # Export controllers
+│   │
 │   ├── 📁 db/                   # Database configuration
 │   │   ├── 📄 schema.ts         # Drizzle schema definitions
 │   │   └── 📄 index.ts          # Database connection
@@ -43,7 +60,6 @@
 │   │   └── 📄 auth.ts           # JWT & bcrypt utilities
 │   │
 │   ├── 📁 middleware/           # Custom middlewares
-│   │   └── 📄 auth.ts           # Authentication middleware
 │   │
 │   ├── 📁 routes/               # API route definitions
 │   │   ├── 📄 auth.ts           # Authentication endpoints
@@ -52,20 +68,22 @@
 │   │   ├── 📄 tasks.ts          # Task CRUD & drag-drop
 │   │   ├── 📄 comments.ts       # Comment system
 │   │   ├── 📄 members.ts        # Board member management
-│   │   └── 📄 activities.ts     # Activity logs
+│   │   ├── 📄 activities.ts     # Activity logs
+│   │   ├── 📄 upload.ts         # File upload
+│   │   ├── 📄 search.ts         # Search & filters
+│   │   └── 📄 notifications.ts  # Notifications
 │   │
+│   ├── 📁 services/             # Business logic services
+│   │   ├── 📄 authService.ts    # Auth service
+│   │   ├── 📄 uploadService.ts  # Upload handling
+│   │   ├── 📄 notificationService.ts # Notifications
+│   │   └── 📄 index.ts          # Export services
+│   │
+│   ├── 📁 types/                # TypeScript type definitions
+│   │   └── 📄 index.ts          # Shared types
+│   │
+│   ├── 📄 websocket.ts          # WebSocket server
 │   └── 📄 index.ts              # Server entry point
-│
-├── 📄 .env                      # Environment variables
-├── 📄 .env.example              # Environment template
-├── 📄 .gitignore                # Git ignore rules
-├── 📄 bun.lockb                 # Bun lock file
-├── 📄 docker-compose.yml        # PostgreSQL Docker setup
-├── 📄 drizzle.config.ts         # Drizzle configuration
-├── 📄 package.json              # Project dependencies
-├── 📄 tsconfig.json             # TypeScript configuration
-├── 📄 seed.sql                  # Sample data for development
-└── 📄 README.md                 # Project documentation
 ```
 
 ## ⚙️ Environment Variables
@@ -135,7 +153,11 @@ bun run db:push
 7. **Seed sample data (optional)**
 
 ```bash
-docker exec -i flowsync-db psql -U postgres -d flowsync < seed.sql
+# Main Seed
+docker exec -i flowsync-db psql -U postgres -d flowsync < drizzle/seed.sql
+
+# Just add Notifications:
+docker exec -i flowsync-db psql -U postgres -d flowsync < drizzle/0001_add_notifications.sql
 ```
 
 8. **Start development server**
@@ -212,6 +234,27 @@ bun run db:studio    # Open Drizzle Studio (database GUI)
 
 - `GET /api/activities/board/:boardId` - Get board activity log
 
+### Search & Filters
+
+- `GET /api/search/tasks` - Search tasks with filters
+  - Query params: `boardId`, `q`, `priority`, `assignedTo`, `columnId`, `createdBy`, `limit`, `offset`
+
+### Notifications
+
+- `GET /api/notifications` - Get user notifications (protected)
+- `PATCH /api/notifications/:id/read` - Mark notification as read
+- `PATCH /api/notifications/read-all` - Mark all as read
+
+### File Upload
+
+- `POST /api/upload/avatar` - Upload avatar image (protected)
+  - Accepts: JPEG, PNG, WebP (max 5MB)
+
+### WebSocket
+
+- `WS /ws/:boardId` - Real-time board updates (protected)
+  - Events: `user_joined`, `user_left`, `task_created`, `task_moved`, `comment_added`, `notification`
+
 ## 🐳 Docker Commands
 
 ```bash
@@ -259,6 +302,19 @@ Connection settings:
 4. Click "Authorize" button (🔒 icon)
 5. Enter: `Bearer <your-token>`
 6. Now you can test all protected endpoints!
+
+## ✨ Key Features
+
+- **JWT Authentication** - Secure user authentication with bcrypt
+- **Real-time Collaboration** - WebSocket support for live updates
+- **Drag & Drop Tasks** - Move tasks between columns with position tracking
+- **File Upload** - Avatar upload with validation (5MB limit)
+- **Advanced Search** - Full-text search with multiple filters
+- **Notifications** - Real-time notifications for assignments & mentions
+- **Activity Logging** - Complete audit trail with filters
+- **Rate Limiting** - Built-in protection (100 req/min)
+- **Role-based Access** - Owner/Editor/Viewer permissions
+- **Auto-generated API Docs** - Interactive Swagger UI
 
 ## 🙏 Acknowledgments
 
