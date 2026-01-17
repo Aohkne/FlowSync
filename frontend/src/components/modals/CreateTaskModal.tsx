@@ -77,7 +77,7 @@ export const CreateTaskModal = ({
               {...register("title")}
               type="text"
               id="title"
-              className="input pl-11"
+              className="w-full px-11 py-2 bg-white outline-none"
               placeholder="e.g., Design landing page mockup"
               autoFocus
             />

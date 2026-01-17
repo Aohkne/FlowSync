@@ -62,8 +62,8 @@ export const CreateBoardModal = ({
               {...register("title")}
               type="text"
               id="title"
-              className="input pl-11"
-              placeholder="e.g., Marketing Campaign Q1"
+              className="w-full px-11 py-2 bg-white outline-none"
+              placeholder="e.g., FlowSync"
               autoFocus
             />
             <Icon 
@@ -94,7 +94,7 @@ export const CreateBoardModal = ({
               id="description"
               rows={4}
               className="input resize-none"
-              placeholder="What's this board about? Add goals, context, or any helpful information..."
+              placeholder="What's this board about? Add goals, context, or any helpful information(Synchronize your workflow in real-time)..."
             />
           </div>
           {errors.description && (
