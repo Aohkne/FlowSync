@@ -2,15 +2,14 @@ import { Elysia } from "elysia";
 import { eq } from "drizzle-orm";
 
 import type { SafeUser } from "../types";
-import { verifyToken } from "../lib/auth";
-
+import { verifyToken } from "../lib/auth"
+;
 import { db } from "../db";
 import { users } from "../db/schema";
 
-export const authMiddleware = new Elysia()
-  .derive(async ({ headers, set }) => {
+export const authMiddleware = (app: Elysia) => 
+  app.derive(async ({ headers, set }) => {
     const authHeader = headers.authorization;
-
     if (!authHeader?.startsWith("Bearer ")) {
       set.status = 401;
       throw new Error("Missing or invalid authorization header");
@@ -24,7 +23,6 @@ export const authMiddleware = new Elysia()
       throw new Error("Invalid or expired token");
     }
 
-    // Get user from database
     const user = await db.query.users.findFirst({
       where: eq(users.id, payload.userId),
       columns: {
@@ -42,5 +40,4 @@ export const authMiddleware = new Elysia()
     }
 
     return { user: user as SafeUser };
-  })
-  .as("global");
+  });

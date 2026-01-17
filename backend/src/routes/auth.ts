@@ -1,6 +1,9 @@
 import { Elysia, t } from "elysia";
-import { authMiddleware } from "../middleware/auth";
+
+import type { AuthContext } from "../types";
+
 import { AuthController } from "../controllers";
+import { authMiddleware } from "../middleware/auth";
 
 const authController = new AuthController();
 
@@ -8,7 +11,7 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
   // REGISTER
   .post(
     "/register",
-    async ({ body, set }) => {
+    async ({ body, set }) => {      
       try {
         const result = await authController.register(body);
         set.status = 201;
@@ -24,17 +27,17 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
       body: t.Object({
         email: t.String({
           format: "email",
-          default: "user@example.com",
+          default: "huukhoa@example.com",
           description: "User email address",
         }),
         password: t.String({
           minLength: 6,
-          default: "password123",
+          default: "Login123@",
           description: "Password (minimum 6 characters)",
         }),
         fullName: t.Optional(
           t.String({
-            default: "John Doe",
+            default: "Le Huu Khoa",
             description: "User full name",
           })
         ),
@@ -64,11 +67,11 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
       body: t.Object({
         email: t.String({
           format: "email",
-          default: "user@example.com",
+          default: "huukhoa@example.com",
         }),
         password: t.String({
           minLength: 6,
-          default: "password123",
+          default: "Login123@",
         }),
       }),
       detail: {
@@ -79,41 +82,42 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
     }
   )
 
-  // Protected routes
-  .use(authMiddleware)
+  // PROTECTED
+  .group("", (app) =>
+    app
+      .use(authMiddleware)
+      // GET CURRENT USER
+      .get(
+        "/me",
+        async ({ user }: AuthContext) => {
+          return await authController.getMe(user.id);
+        },
+        {
+          detail: {
+            tags: ["Auth"],
+            summary: "Get current user",
+            description: "Get authenticated user information",
+            security: [{ bearerAuth: [] }],
+          },
+        }
+      )
 
-  // GET CURRENT USER
-  .get(
-    "/me",
-    async ({ user }) => {
-      return await authController.getMe(user.id);
-    },
-    {
-      detail: {
-        tags: ["Auth"],
-        summary: "Get current user",
-        description: "Get authenticated user information",
-        security: [{ bearerAuth: [] }],
-      },
-    }
-  )
-
-  // UPDATE PROFILE
-  .patch(
-    "/profile",
-    async ({ user, body }) => {
-      return await authController.updateProfile(user.id, body);
-    },
-    {
-      body: t.Object({
-        fullName: t.Optional(t.String({ maxLength: 255 })),
-        avatarUrl: t.Optional(t.String()),
-      }),
-      detail: {
-        tags: ["Auth"],
-        summary: "Update profile",
-        description: "Update user profile information",
-        security: [{ bearerAuth: [] }],
-      },
-    }
+      // UPDATE PROFILE
+      .patch(
+        "/profile",
+        async ({ user, body }: AuthContext & { body: any}) => {
+          return await authController.updateProfile(user.id, body);
+        },
+        {
+          body: t.Object({
+            fullName: t.Optional(t.String({ maxLength: 255 })),
+            avatarUrl: t.Optional(t.String()),
+          }),
+          detail: {
+            tags: ["Auth"],
+            summary: "Update profile",
+            description: "Update user profile information",
+            security: [{ bearerAuth: [] }],
+          },
+        })
   );

@@ -20,6 +20,11 @@ export class AuthService {
   async register(data: RegisterData): Promise<AuthResponse> {
     const { email, password, fullName } = data;
 
+    console.log(email);
+    console.log(password);
+    console.log(email);
+    
+
     // Check if user exists
     const existingUser = await db.query.users.findFirst({
       where: eq(users.email, email),
