@@ -49,7 +49,7 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      {/* Email Input */}
+      {/* Email */}
       <div>
         <label
           htmlFor="email"
@@ -62,8 +62,8 @@ export const LoginForm = () => {
             {...register("email")}
             type="email"
             id="email"
-            className="input pl-11"
-            placeholder="john@example.com"
+            className="w-full px-11 py-2 bg-white outline-none"
+            placeholder="huukhoa@example.com"
             autoComplete="email"
           />
           <Icon 
@@ -80,7 +80,7 @@ export const LoginForm = () => {
         )}
       </div>
 
-      {/* Password Input */}
+      {/* Password */}
       <div>
         <label
           htmlFor="password"
@@ -93,8 +93,8 @@ export const LoginForm = () => {
             {...register("password")}
             type={showPassword ? "text" : "password"}
             id="password"
-            className="input pl-11 pr-11"
-            placeholder="••••••••"
+            className="w-full px-11 py-2 bg-white outline-none"
+            placeholder="Login123@"
             autoComplete="current-password"
           />
           <Icon 
@@ -135,7 +135,7 @@ export const LoginForm = () => {
         </div>
       )}
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={isLoading}

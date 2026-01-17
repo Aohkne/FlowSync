@@ -50,7 +50,7 @@ export const RegisterForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      {/* Full Name Input */}
+      {/* Full Name */}
       <div>
         <label
           htmlFor="fullName"
@@ -63,8 +63,8 @@ export const RegisterForm = () => {
             {...register("fullName")}
             type="text"
             id="fullName"
-            className="input pl-11"
-            placeholder="John Doe"
+            className="w-full px-11 py-2 bg-white outline-none"
+            placeholder="Le Huu Khoa"
             autoComplete="name"
           />
           <Icon 
@@ -81,7 +81,7 @@ export const RegisterForm = () => {
         )}
       </div>
 
-      {/* Email Input */}
+      {/* Email */}
       <div>
         <label
           htmlFor="email"
@@ -94,8 +94,8 @@ export const RegisterForm = () => {
             {...register("email")}
             type="email"
             id="email"
-            className="input pl-11"
-            placeholder="john@example.com"
+            className="w-full px-11 py-2 bg-white outline-none"
+            placeholder="huukhoa@example.com"
             autoComplete="email"
           />
           <Icon 
@@ -112,7 +112,7 @@ export const RegisterForm = () => {
         )}
       </div>
 
-      {/* Password Input */}
+      {/* Password */}
       <div>
         <label
           htmlFor="password"
@@ -125,8 +125,8 @@ export const RegisterForm = () => {
             {...register("password")}
             type={showPassword ? "text" : "password"}
             id="password"
-            className="input pl-11 pr-11"
-            placeholder="••••••••"
+            className="w-full px-11 py-2 bg-white outline-none"
+            placeholder="Login123@"
             autoComplete="new-password"
           />
           <Icon 
@@ -167,7 +167,7 @@ export const RegisterForm = () => {
         </div>
       )}
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={isLoading}
