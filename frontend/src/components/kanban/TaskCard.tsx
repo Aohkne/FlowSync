@@ -2,7 +2,6 @@ import { Icon } from "@iconify/react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Task } from "../../types";
-import { format } from "date-fns";
 
 interface TaskCardProps {
   task: Task;
@@ -10,9 +9,24 @@ interface TaskCardProps {
 }
 
 const priorityConfig = {
-  low: { color: "text-gray-600", bg: "bg-gray-100", icon: "mdi:flag-outline" },
-  medium: { color: "text-yellow-600", bg: "bg-yellow-100", icon: "mdi:flag" },
-  high: { color: "text-red-600", bg: "bg-red-100", icon: "mdi:flag" },
+  low: { 
+    color: '#6b7280', 
+    bg: 'rgba(243, 244, 246, 0.8)', 
+    icon: 'mdi:flag-outline',
+    label: 'Low'
+  },
+  medium: { 
+    color: '#f59e0b', 
+    bg: 'rgba(254, 243, 199, 0.8)', 
+    icon: 'mdi:flag',
+    label: 'Medium'
+  },
+  high: { 
+    color: '#ef4444', 
+    bg: 'rgba(254, 226, 226, 0.8)', 
+    icon: 'mdi:flag',
+    label: 'High'
+  },
 };
 
 export const TaskCard = ({ task, onClick }: TaskCardProps) => {
@@ -42,47 +56,97 @@ export const TaskCard = ({ task, onClick }: TaskCardProps) => {
       {...attributes}
       {...listeners}
       onClick={onClick}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 cursor-pointer hover:shadow-md transition-shadow"
+      className="group relative cursor-grab active:cursor-grabbing"
     >
-      {/* Task Title */}
-      <h4 className="font-medium text-gray-900 mb-2">{task.title}</h4>
-
-      {/* Task Description */}
-      {task.description && (
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-          {task.description}
-        </p>
-      )}
-
-      {/* Task Footer */}
-      <div className="flex items-center justify-between">
-        {/* Priority Badge */}
-        <div
-          className={`flex items-center gap-1 px-2 py-1 rounded ${priority.bg}`}
-        >
-          <Icon icon={priority.icon} width={14} className={priority.color} />
-          <span className={`text-xs font-medium ${priority.color}`}>
-            {task.priority}
-          </span>
+      {/* Glass Card */}
+      <div 
+        className="glass-card rounded-xl p-4 border hover:shadow-xl transition-all duration-300"
+        style={{
+          background: 'rgba(255, 255, 255, 0.9)',
+          borderColor: 'rgba(229, 231, 235, 0.5)',
+        }}
+      >
+        {/* Priority Badge - Top Right */}
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <h4 className="font-semibold text-gray-900 leading-tight flex-1 line-clamp-2">
+            {task.title}
+          </h4>
+          
+          <div 
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium shrink-0"
+            style={{ 
+              backgroundColor: priority.bg,
+              color: priority.color
+            }}
+          >
+            <Icon icon={priority.icon} width={14} />
+            <span>{priority.label}</span>
+          </div>
         </div>
 
-        {/* Assigned User */}
-        {task.assignedUser && (
-          <div className="flex items-center gap-1">
-            {task.assignedUser.avatarUrl ? (
-              <img
-                src={task.assignedUser.avatarUrl}
-                alt={task.assignedUser.fullName || "User"}
-                className="w-6 h-6 rounded-full"
-              />
+        {/* Task Description */}
+        {task.description && (
+          <p className="text-sm text-gray-600 mb-3 line-clamp-2 leading-relaxed">
+            {task.description}
+          </p>
+        )}
+
+        {/* Task Footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+          {/* Assigned User */}
+          <div className="flex items-center gap-2">
+            {task.assignedUser ? (
+              <>
+                {task.assignedUser.avatarUrl ? (
+                  <img
+                    src={task.assignedUser.avatarUrl}
+                    alt={task.assignedUser.fullName || "User"}
+                    className="w-7 h-7 rounded-full ring-2 ring-white shadow-sm"
+                  />
+                ) : (
+                  <div 
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-semibold ring-2 ring-white shadow-sm"
+                    style={{
+                      background: 'linear-gradient(135deg, #4ade80 0%, #16a34a 100%)'
+                    }}
+                  >
+                    {task.assignedUser.fullName?.[0] ||
+                      task.assignedUser.email[0].toUpperCase()}
+                  </div>
+                )}
+                <span className="text-xs text-gray-500 font-medium">
+                  {task.assignedUser.fullName || task.assignedUser.email.split('@')[0]}
+                </span>
+              </>
             ) : (
-              <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">
-                {task.assignedUser.fullName?.[0] ||
-                  task.assignedUser.email[0].toUpperCase()}
+              <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                <Icon icon="mdi:account-outline" width={16} />
+                <span>Unassigned</span>
               </div>
             )}
           </div>
-        )}
+
+          {/* Comment Count (if you have comments) */}
+          {task.comments && task.comments.length > 0 && (
+            <div className="flex items-center gap-1 text-xs text-gray-500">
+              <Icon icon="mdi:comment-outline" width={16} />
+              <span>{task.comments.length}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Hover Effect Indicator */}
+        <div 
+          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+          style={{
+            background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)',
+          }}
+        />
+      </div>
+
+      {/* Drag Indicator */}
+      <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+        <Icon icon="mdi:drag-vertical" width={16} className="text-gray-400" />
       </div>
     </div>
   );
