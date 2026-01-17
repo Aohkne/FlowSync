@@ -66,7 +66,7 @@ export const searchRoutes = new Elysia({ prefix: '/search' })
       // Filter by assigned user
       if (assignedTo) {
         if (assignedTo === 'unassigned') {
-          conditions.push(isNull(tasks.assignedTo)); // ✅ SỬA: Dùng isNull thay vì eq(null)
+          conditions.push(isNull(tasks.assignedTo));
         } else {
           conditions.push(eq(tasks.assignedTo, assignedTo));
         }
