@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: flowsync_db
+    restart: always
+    environment:
+      POSTGRES_USER: flowsync_user
+      POSTGRES_PASSWORD: flowsync_pass
+      POSTGRES_DB: flowsync_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flowsync_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend (Elysia + Bun)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://flowsync_user:flowsync_pass@db:5432/flowsync_db
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      PORT: 3000
+      NODE_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  # Frontend (React + Vite + Bun)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3000/api
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
