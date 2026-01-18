@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/app/src/assets/" alt="FlowSync Logo" />
+  <img src="/frontend/public//banner.png" alt="FlowSync Logo" />
 </p>
 
 # FlowSync

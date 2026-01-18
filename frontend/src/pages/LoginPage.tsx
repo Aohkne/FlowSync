@@ -32,18 +32,26 @@ export const LoginPage = () => {
             {/* Header */}
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-2xl blur-xl opacity-50 animate-glow"
-                       style={{ backgroundColor: '#4ade80' }} />
-                  <div className="relative p-3 rounded-2xl shadow-xl"
-                       style={{ 
-                         background: 'linear-gradient(135deg, #4ade80 0%, #16a34a 100%)'
-                       }}>
-                    <Icon
-                      icon="mdi:view-dashboard-variant"
-                      width={40}
-                      className="text-white"
+                <div className="relative group">
+                  <div className="absolute inset-0 rounded-lg blur-lg opacity-60 animate-glow transition-all duration-500 group-hover:opacity-80 group-hover:blur-3xl"
+                      style={{ backgroundColor: '#4ade80' }} />
+                  
+                  <div className="absolute -inset-1 rounded-2xl blur-md opacity-30 animate-pulse"
+                      style={{ backgroundColor: '#22c55e' }} />
+                  
+                  {/* Logo */}
+                  <div className="relative p-4 rounded-2xl shadow-2xl backdrop-blur-sm transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
+                      style={{ 
+                        background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)',
+                        boxShadow: '0 20px 40px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                      }}>
+                    <img 
+                      src={"/logo.png"} 
+                      alt="FlowSync Logo" 
+                      className="w-14 h-14 object-contain drop-shadow-lg transition-transform duration-500 group-hover:scale-110" 
                     />
+                    
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
                 </div>
               </div>

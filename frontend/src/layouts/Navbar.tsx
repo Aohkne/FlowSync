@@ -24,23 +24,13 @@ export const Navbar = () => {
             className="flex items-center gap-3 group"
           >
             <div className="relative">
-              <div 
-                className="absolute inset-0 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" 
-                style={{ backgroundColor: '#4ade80' }} 
-              />
-              <div 
-                className="relative p-2 rounded-xl shadow-lg"
-                style={{ 
-                  background: 'linear-gradient(135deg, #4ade80 0%, #16a34a 100%)'
-                }}
-              >
-                <Icon
-                  icon="mdi:view-dashboard-variant"
-                  width={28}
-                  className="text-white"
+                <img 
+                  src={"/logo.png"} 
+                  alt="FlowSync Logo" 
+                  className="w-11 h-11 object-contain" 
                 />
-              </div>
             </div>
+
             <div className="flex flex-col">
               <span 
                 className="text-xl font-bold"
@@ -57,7 +47,7 @@ export const Navbar = () => {
                 className="text-[10px] font-medium tracking-wider uppercase"
                 style={{ color: 'rgba(22, 163, 74, 0.6)' }}
               >
-                Project Management
+                Synchronize your workflow in real-time
               </span>
             </div>
           </Link>
