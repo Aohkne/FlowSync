@@ -1,14 +1,22 @@
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useAuthStore, useUser } from "../store/authStore";
+import { NotificationsPanel } from "../components/NotificationsPanel";
+import { SearchPanel } from "../components/SearchPanel";
+import { ActivitySidebar } from "../components/ActivitySidebar";
 
 export const Navbar = () => {
   const user = useUser();
   const logout = useAuthStore((state) => state.logout);
+  const { id: boardId } = useParams();
+
+  const handleTaskClick = (taskId: string) => {
+    console.log("Task clicked:", taskId);
+  };
 
   return (
     <nav className="sticky top-0 z-50 glass-panel border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link 
@@ -56,23 +64,23 @@ export const Navbar = () => {
 
           {/* User Menu */}
           {user && (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              {/* Board-specific actions */}
+              {boardId && (
+                <>
+                  <SearchPanel 
+                    boardId={boardId} 
+                    onTaskClick={handleTaskClick}
+                  />
+                  <ActivitySidebar boardId={boardId} />
+                </>
+              )}
+
               {/* Notifications */}
-              <button 
-                className="relative p-2 rounded-xl hover:bg-white/50 transition-colors group"
-                title="Notifications"
-              >
-                <Icon 
-                  icon="mdi:bell-outline" 
-                  width={22} 
-                  className="text-gray-600 group-hover:transition-colors"
-                  style={{ color: '#4b5563' }}
-                />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              </button>
+              <NotificationsPanel />
 
               {/* User Profile */}
-              <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/50 hover:bg-white/70 transition-all group">
+              <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/50 hover:bg-white/70 transition-all group ml-2">
                 <div className="relative">
                   {user.avatarUrl ? (
                     <img

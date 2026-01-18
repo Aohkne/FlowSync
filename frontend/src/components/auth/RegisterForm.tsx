@@ -58,7 +58,7 @@ export const RegisterForm = () => {
         >
           Full Name
         </label>
-        <div className="relative">
+        <div className="relative border rounded-lg border-green-500 overflow-hidden">
           <input
             {...register("fullName")}
             type="text"
@@ -89,7 +89,7 @@ export const RegisterForm = () => {
         >
           Email Address
         </label>
-        <div className="relative">
+        <div className="relative border rounded-lg border-green-500 overflow-hidden">
           <input
             {...register("email")}
             type="email"
@@ -120,7 +120,7 @@ export const RegisterForm = () => {
         >
           Password
         </label>
-        <div className="relative">
+        <div className="relative border rounded-lg border-green-500 overflow-hidden">
           <input
             {...register("password")}
             type={showPassword ? "text" : "password"}

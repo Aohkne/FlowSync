@@ -107,7 +107,7 @@ export const RegisterPage = () => {
 
           {/* Footer Text */}
           <p className="text-center mt-6 text-sm text-gray-600/80">
-            © 2024 FlowSync. Streamline your workflow.
+            © 2026 FlowSync. Streamline your workflow.
           </p>
         </div>
       </div>

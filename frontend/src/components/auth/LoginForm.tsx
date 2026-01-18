@@ -57,7 +57,7 @@ export const LoginForm = () => {
         >
           Email Address
         </label>
-        <div className="relative">
+        <div className="relative border rounded-lg border-green-500 overflow-hidden">
           <input
             {...register("email")}
             type="email"
@@ -88,7 +88,7 @@ export const LoginForm = () => {
         >
           Password
         </label>
-        <div className="relative">
+        <div className="relative border rounded-lg border-green-500 overflow-hidden">
           <input
             {...register("password")}
             type={showPassword ? "text" : "password"}

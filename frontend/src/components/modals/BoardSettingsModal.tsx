@@ -1,0 +1,252 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Icon } from "@iconify/react";
+import { Modal } from "./Modal";
+import { useUpdateBoard, useDeleteBoard } from "../../hooks/useBoards";
+import { useNavigate } from "react-router-dom";
+import type { Board } from "../../types";
+
+const boardSchema = z.object({
+  title: z.string().min(1, "Title is required").max(100, "Title too long"),
+  description: z.string().max(500, "Description too long").optional(),
+  isPublic: z.boolean(),
+});
+
+type BoardFormData = z.infer<typeof boardSchema>;
+
+interface BoardSettingsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  board: Board;
+}
+
+export const BoardSettingsModal = ({
+  isOpen,
+  onClose,
+  board,
+}: BoardSettingsModalProps) => {
+  const navigate = useNavigate();
+  const updateBoard = useUpdateBoard();
+  const deleteBoard = useDeleteBoard();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<BoardFormData>({
+    resolver: zodResolver(boardSchema),
+    defaultValues: {
+      title: board.title,
+      description: board.description || "",
+      isPublic: board.isPublic,
+    },
+  });
+
+  const onSubmit = async (data: BoardFormData) => {
+    try {
+      await updateBoard.mutateAsync({
+        id: board.id,
+        data,
+      });
+      onClose();
+    } catch (error) {
+      console.error("Failed to update board:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteBoard.mutateAsync(board.id);
+      navigate("/boards");
+    } catch (error) {
+      console.error("Failed to delete board:", error);
+    }
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Board Settings" size="md">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Title Input */}
+        <div>
+          <label
+            htmlFor="title"
+            className="block text-sm font-semibold text-gray-700 mb-2"
+          >
+            Board Title <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <input
+              {...register("title")}
+              type="text"
+              id="title"
+              className="input pl-11"
+              placeholder="e.g., Marketing Campaign Q1"
+            />
+            <Icon
+              icon="mdi:bulletin-board"
+              width={20}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+          </div>
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+              <Icon icon="mdi:alert-circle" width={16} />
+              {errors.title.message}
+            </p>
+          )}
+        </div>
+
+        {/* Description Input */}
+        <div>
+          <label
+            htmlFor="description"
+            className="block text-sm font-semibold text-gray-700 mb-2"
+          >
+            Description <span className="text-gray-400 font-normal">(optional)</span>
+          </label>
+          <textarea
+            {...register("description")}
+            id="description"
+            rows={4}
+            className="input resize-none"
+            placeholder="What's this board about?"
+          />
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+              <Icon icon="mdi:alert-circle" width={16} />
+              {errors.description.message}
+            </p>
+          )}
+        </div>
+
+        {/* Public Toggle */}
+        <div
+          className="p-4 rounded-xl border"
+          style={{
+            background: "rgba(249, 250, 251, 0.8)",
+            borderColor: "rgba(229, 231, 235, 0.5)",
+          }}
+        >
+          <label className="flex items-center justify-between cursor-pointer group">
+            <div className="flex items-center gap-3">
+              <div
+                className="p-2 rounded-lg group-hover:scale-110 transition-transform"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)",
+                }}
+              >
+                <Icon icon="mdi:earth" width={20} className="text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Public board</p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Anyone with the link can view this board
+                </p>
+              </div>
+            </div>
+            <input
+              {...register("isPublic")}
+              type="checkbox"
+              className="w-5 h-5 rounded text-green-600 focus:ring-green-500 focus:ring-offset-0 cursor-pointer"
+            />
+          </label>
+        </div>
+
+        {/* Danger Zone */}
+        <div
+          className="p-4 rounded-xl border"
+          style={{
+            background: "rgba(254, 226, 226, 0.3)",
+            borderColor: "rgba(239, 68, 68, 0.3)",
+          }}
+        >
+          <div className="flex items-start gap-3 mb-3">
+            <Icon icon="mdi:alert" width={20} className="text-red-600 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-red-900">Danger Zone</p>
+              <p className="text-xs text-red-700 mt-1">
+                Deleting this board will permanently remove all columns, tasks, and
+                comments. This action cannot be undone.
+              </p>
+            </div>
+          </div>
+
+          {!showDeleteConfirm ? (
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="btn-danger flex items-center gap-2 text-sm"
+            >
+              <Icon icon="mdi:delete-outline" width={18} />
+              Delete Board
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-red-900">
+                Are you absolutely sure?
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={deleteBoard.isPending}
+                  className="btn-danger flex-1 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {deleteBoard.isPending ? (
+                    <>
+                      <Icon icon="mdi:loading" width={18} className="animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Icon icon="mdi:check" width={18} />
+                      Yes, Delete
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div
+          className="flex justify-end gap-3 pt-4 border-t"
+          style={{ borderColor: "rgba(229, 231, 235, 0.5)" }}
+        >
+          <button type="button" onClick={onClose} className="btn-secondary">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={updateBoard.isPending}
+            className="btn-primary flex items-center gap-2 disabled:opacity-50"
+          >
+            {updateBoard.isPending ? (
+              <>
+                <Icon icon="mdi:loading" width={20} className="animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Icon icon="mdi:check" width={20} />
+                Save Changes
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+};
