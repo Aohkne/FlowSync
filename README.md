@@ -9,14 +9,81 @@ Synchronize your workflow in real-time
 ## 🎯 Overview
 
 **FlowSync** is a modern, real-time collaborative task management application inspired by Trello. Built with cutting-edge technologies like Bun, Elysia, PostgreSQL, and React, it enables teams to organize projects, track progress, and collaborate seamlessly. With drag-and-drop functionality, real-time updates via WebSocket, and comprehensive activity tracking, teams can stay perfectly synchronized and boost productivity.
-flowSync
-## 🎬 Demo Video
 
-Watch our introduction video to see FlowSync in action:
+---
 
-[![FlowSync Introduction Video](https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+## 🎬 Application Screenshots
 
-_Click the image above to watch the full demo on YouTube_
+<div align="center">
+
+>  **Click on each section below to view screenshots**
+
+</div>
+
+<details>
+<summary>🐳 <b>Docker Deployment & Infrastructure</b></summary>
+<br/>
+<div align="center">
+<img src="docs/images/docker_demo.png" alt="Docker Deployment" width="85%"/>
+<p><i>Complete Docker setup with PostgreSQL, Backend, and Frontend services</i></p>
+</div>
+</details>
+
+<details>
+<summary>📚 <b>API Documentation (Swagger UI)</b></summary>
+<br/>
+<div align="center">
+<img src="docs/images/elysia_swagger_ui.png" alt="Swagger API Documentation" width="85%"/>
+<p><i>Interactive API documentation powered by Elysia and Swagger</i></p>
+</div>
+</details>
+
+<details>
+<summary>🧪 <b>API Testing Interface</b></summary>
+<br/>
+<div align="center">
+<img src="docs/images/swagger_test.png" alt="API Testing" width="85%"/>
+<p><i>Test API endpoints directly from the browser</i></p>
+</div>
+</details>
+
+<details>
+<summary>📊 <b>Boards Dashboard</b></summary>
+<br/>
+<div align="center">
+<img src="docs/images/boards_ui.png" alt="Boards Overview" width="85%"/>
+<p><i>Manage multiple project boards with ease</i></p>
+</div>
+</details>
+
+<details>
+<summary>🎯 <b>Kanban Board View</b></summary>
+<br/>
+<div align="center">
+<img src="docs/images/boards_detail_ui.png" alt="Board Detail View" width="85%"/>
+<p><i>Drag-and-drop interface with real-time collaboration</i></p>
+</div>
+</details>
+
+<details>
+<summary>📝 <b>Activity Log & Audit Trail</b></summary>
+<br/>
+<div align="center">
+<img src="docs/images/activity_log_ui.png" alt="Activity Logging" width="85%"/>
+<p><i>Complete history of all board activities and changes</i></p>
+</div>
+</details>
+
+<details>
+<summary>🔍 <b>Advanced Search & Filters</b></summary>
+<br/>
+<div align="center">
+<img src="docs/images/search_board_ui.png" alt="Search Functionality" width="85%"/>
+<p><i>Powerful search with priority, assignee, and column filters</i></p>
+</div>
+</details>
+
+---
 
 ## 📚 Documentation
 
@@ -216,7 +283,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- [Trello](https://trello.com/) - Inspiration for the project
 - [Elysia](https://elysiajs.com/) - Amazing web framework
 - [Drizzle ORM](https://orm.drizzle.team/) - Type-safe ORM
 - [Bun](https://bun.sh/) - Lightning-fast runtime
@@ -226,6 +292,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+<div align="center">
+
 ### 🌟 Star Us on GitHub!
 
 If you find this project useful, please consider giving it a star ⭐ on GitHub to help others discover it.
@@ -233,3 +301,5 @@ If you find this project useful, please consider giving it a star ⭐ on GitHub 
 [![GitHub stars](https://img.shields.io/github/stars/Aohkne/FlowSync?style=social)](https://github.com/Aohkne/FlowSync)
 [![GitHub forks](https://img.shields.io/github/forks/Aohkne/FlowSync?style=social)](https://github.com/Aohkne/FlowSync/fork)
 [![GitHub watchers](https://img.shields.io/github/watchers/Aohkne/FlowSync?style=social)](https://github.com/Aohkne/FlowSync)
+
+</div>
