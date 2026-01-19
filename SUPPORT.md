@@ -15,7 +15,6 @@ Complete guide for installation, configuration, and troubleshooting
 - [Database Management](#-database-management)
 - [Testing with Swagger](#-testing-with-swagger)
 - [Docker Commands](#-docker-commands)
-- [Troubleshooting](#-troubleshooting)
 - [Contributing](#-contributing)
 - [Support Contact](#-support-contact)
 
@@ -545,14 +544,6 @@ git push origin feature/amazing-feature
 
 7. **Open Pull Request** on GitHub
 
-### Code Style
-
-- Follow existing code style
-- Use TypeScript for type safety
-- Write meaningful commit messages
-- Add comments for complex logic
-- Test your changes before committing
-
 ### Running Tests
 
 ```bash
@@ -573,7 +564,7 @@ bun test
 
 - **GitHub Issues**: [Create an issue](https://github.com/Aohkne/FlowSync/issues)
 - **Discussions**: [Join discussions](https://github.com/Aohkne/FlowSync/discussions)
-- **Email**: your.email@example.com
+- **Email**: aohkne@gmail.com
 
 ### Useful Links
 
@@ -581,13 +572,6 @@ bun test
 - **Documentation**: [README.md](./README.md)
 - **Backend Docs**: [backend/README.md](./backend/README.md)
 - **Frontend Docs**: [frontend/README.md](./frontend/README.md)
-- **Docker Guide**: [README-DOCKER.md](./README-DOCKER.md)
-
-### Community
-
-- **Discord**: [Join our server](#) (if available)
-- **Twitter**: [@yourhandle](#)
-- **LinkedIn**: [Your Profile](#)
 
 ---
 
